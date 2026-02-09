@@ -1,0 +1,97 @@
+Mini-Project: Simple Registration System (C++)
+Class Design Overview
+Student  --------> Course        (Association)
+    |
+    |
+Registration ---- uses ----> Student & Course   (Dependency)
+
+1. Course Class
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Course {
+private:
+    string courseCode;
+    string courseName;
+
+public:
+    Course(string code, string name) {
+        courseCode = code;
+        courseName = name;
+    }
+
+    string getCourseCode() {
+        return courseCode;
+    }
+
+    string getCourseName() {
+        return courseName;
+    }
+};
+
+2. Student Class
+#include <vector>
+
+class Student {
+private:
+    string regNo;
+    string name;
+    vector<Course*> courses;   // Association
+
+public:
+    Student(string r, string n) {
+        regNo = r;
+        name = n;
+    }
+
+    void addCourse(Course* c) {
+        courses.push_back(c);
+    }
+
+    void displayCourses() {
+        cout << "Student: " << name << " (" << regNo << ")\n";
+        cout << "Registered Courses:\n";
+        for (Course* c : courses) {
+            cout << "- " << c->getCourseCode()
+                 << " : " << c->getCourseName() << endl;
+        }
+    }
+};
+
+3. Registration Class (Dependency)
+class Registration {
+public:
+    // Dependency: uses Student and Course objects
+    void registerStudent(Student& s, Course& c) {
+        s.addCourse(&c);
+        cout << "Registration successful for "
+             << c.getCourseCode() << endl;
+    }
+};
+
+4. Application File
+int main() {
+    Student s1("EGS/001/25", "Keith Omondi");
+
+    Course c1("ICS2175", "Computer Programming I");
+    Course c2("EGS2102", "Surveying I");
+
+    Registration reg;
+
+    reg.registerStudent(s1, c1);
+    reg.registerStudent(s1, c2);
+
+    cout << endl;
+    s1.displayCourses();
+
+    return 0;
+}
+Sample Output
+Registration successful for ICS2175
+Registration successful for EGS2102
+
+Student: Keith Omondi (EGS/001/25)
+Registered Courses:
+- ICS2175 : Computer Programming I
+- EGS2102 : Surveying I
